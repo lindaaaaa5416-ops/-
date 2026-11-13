@@ -6,7 +6,8 @@ export type Review={id:string;session:string;teaching:string;feedback:string;eff
 export type Knowledge={id:string;name:string;scene:string;owner:string;updated:string};
 export type Version={id:string;knowledge:string;number:string;status:string;content:string;change:string;effective:string;base:string;review:string};
 export type DB={schemaVersion:1;profiles:Profile[];teachers:{id:string;name:string}[];venues:{id:string;name:string}[];templates:{id:string;name:string;knowledge:string}[];sessions:Session[];executions:{id:string;session:string}[];participations:Participation[];materials:Material[];reviews:Review[];knowledge:Knowledge[];versions:Version[]};
-const id=()=>crypto.randomUUID(); const key='core-method-panel-v1';
+export function uuid():string{if(typeof crypto!=='undefined'&&crypto.randomUUID)return crypto.randomUUID();const b=crypto.getRandomValues(new Uint8Array(16));b[6]=(b[6]&0x0f)|0x40;b[8]=(b[8]&0x3f)|0x80;const h=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20)}
+const id=()=>uuid(); const key='core-method-panel-v1';
 export function normalizeTags(input:unknown):string[]{return [...new Set((Array.isArray(input)?input:[input]).filter(x=>typeof x==='string').map(x=>x.trim()).filter(Boolean))]}
 export function normalizeDb(db:DB):DB{for(const p of db.profiles)p.tags=normalizeTags(p.tags);return db}
 export function seed():DB{
